@@ -1,0 +1,15 @@
+{
+  "tasks": {
+    "start": "deno run --allow-net --allow-env --allow-read index.ts"
+  },
+  "imports": {
+    "hono": "https://deno.land/x/hono/mod.ts",
+    "hono/cors": "https://deno.land/x/hono/middleware/cors/index.ts",
+    "hono/logger": "https://deno.land/x/hono/middleware/logger/index.ts",
+    "@supabase/supabase-js": "https://esm.sh/@supabase/supabase-js@2"
+  },
+  "compilerOptions": {
+    "jsx": "react-jsx",
+    "jsxImportSource": "https://esm.sh/react"
+  }
+}
