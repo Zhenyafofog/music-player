@@ -1,0 +1,19 @@
+{
+  // Tailwind CSS настройки (эти точно работают)
+  "css.validate": false,
+  "less.validate": false,
+  "scss.validate": false,
+  "files.associations": {
+    "*.css": "tailwindcss"
+  },
+  "editor.quickSuggestions": {
+    "strings": true
+  },
+  
+  // Deno настройки (только базовые)
+  "deno.enable": true,
+  "deno.unstable": true,
+  "deno.enablePaths": [
+    "./supabase/functions/server"
+  ]
+}
