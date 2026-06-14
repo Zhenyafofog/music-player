@@ -8,8 +8,6 @@ import { CoverViewModal } from './components/CoverViewModal';
 import { toast } from 'sonner';
 import { Toaster } from 'sonner';
 import * as api from './api/tracks';
-import { supabase } from "./lib/supabaseClient";
-import { User } from "@supabase/supabase-js";
 
 interface Track {
   id: string;
