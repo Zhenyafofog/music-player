@@ -28,9 +28,8 @@ export function Player({ track, isPlaying, isShuffle, onPlayPause, onNext, onPre
 useEffect(() => {
   if (!track || !audioRef.current) return;
   
-  // Явно проверяем, что file существует и это File
   if (track.file && track.file instanceof File) {
-    const url = URL.createObjectURL(track.file as File); // Явное приведение типа
+    const url = URL.createObjectURL(track.file as File);
     audioRef.current.src = url;
     audioRef.current.volume = volume;
     audioRef.current.currentTime = 0;
@@ -66,15 +65,13 @@ useEffect(() => {
   } else {
     console.warn('Нет источника звука для трека:', track.name);
   }
-}, [track?.id]); // Отслеживаем только изменение ID трека
+}, [track?.id]); 
 
 useEffect(() => {
   if (audioRef.current && track) {
-    // Проверяем, есть ли источник звука
     const hasSource = (track.file instanceof File) || track.audioUrl;
     
     if (!hasSource) {
-      // Если нет источника, останавливаем
       if (isPlaying) {
         onPlayPause();
       }
@@ -143,7 +140,6 @@ useEffect(() => {
       
       <div className="max-w-7xl mx-auto px-6 py-4">
         <div className="flex items-center gap-6">
-          {/* Обложка и информация о треке */}
           <div className="flex items-center gap-4 flex-1 min-w-0">
             {track.coverUrl ? (
               <img 
@@ -163,7 +159,6 @@ useEffect(() => {
             </div>
           </div>
           
-          {/* Управление */}
           <div className="flex flex-col items-center gap-2 shrink-0 ml-40">
             <div className="flex items-center gap-4">
               <button
@@ -205,7 +200,6 @@ useEffect(() => {
               </button>
             </div>
             
-            {/* Прогресс бар */}
             <div className="flex items-center gap-2 w-80 max-w-full">
               <span className="text-xs text-gray-500 dark:text-gray-400 w-10 text-right">
                 {formatTime(currentTime)}
@@ -224,7 +218,6 @@ useEffect(() => {
             </div>
           </div>
           
-          {/* Громкость */}
           <div className="flex items-center gap-2 flex-1 justify-end">
             <Volume2 className="w-5 h-5 text-gray-600 dark:text-gray-300" />
             <input

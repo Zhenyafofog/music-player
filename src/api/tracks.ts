@@ -11,7 +11,6 @@ interface Track {
   coverUrl?: string;
 }
 
-// Загрузка трека на сервер
 export async function uploadTrack(
   audioFile: File,
   name: string,
@@ -46,7 +45,6 @@ export async function uploadTrack(
   return data.track;
 }
 
-// Получение всех треков
 export async function getTracks(): Promise<Track[]> {
   const response = await fetch(`${API_URL}/tracks`, {
     method: 'GET',
@@ -64,7 +62,6 @@ export async function getTracks(): Promise<Track[]> {
   return data.tracks;
 }
 
-// Обновление трека
 export async function updateTrack(
   trackId: string,
   name: string,
@@ -85,7 +82,6 @@ export async function updateTrack(
   }
 }
 
-// Добавление обложки к треку
 export async function addCoverToTrack(
   trackId: string,
   coverFile: File
@@ -110,7 +106,6 @@ export async function addCoverToTrack(
   return data.coverUrl;
 }
 
-// Удаление трека
 export async function deleteTrack(trackId: string): Promise<void> {
   const response = await fetch(`${API_URL}/tracks/${trackId}`, {
     method: 'DELETE',

@@ -11,7 +11,6 @@ const supabase = createClient(
   Deno.env.get('SUPABASE_SERVICE_ROLE_KEY') ?? '',
 );
 
-// Создание бакета при запуске
 const bucketName = 'make-822d5729-music';
 const initStorage = async () => {
   const { data: buckets } = await supabase.storage.listBuckets();
@@ -23,10 +22,7 @@ const initStorage = async () => {
 };
 initStorage();
 
-// Enable logger
 app.use('*', logger(console.log));
-
-// Enable CORS for all routes and methods
 app.use(
   "/*",
   cors({
@@ -38,12 +34,10 @@ app.use(
   }),
 );
 
-// Health check endpoint
 app.get("/make-server-822d5729/health", (c) => {
   return c.json({ status: "ok" });
 });
 
-// Загрузка трека
 app.post("/make-server-822d5729/tracks", async (c) => {
   try {
     const formData = await c.req.formData();
@@ -58,8 +52,6 @@ app.post("/make-server-822d5729/tracks", async (c) => {
     }
 
     const trackId = Date.now().toString();
-
-    // Загрузка аудиофайла
     const audioFileName = `${trackId}_${audioFile.name}`;
     const audioBuffer = await audioFile.arrayBuffer();
     const { error: audioError } = await supabase.storage
@@ -73,7 +65,6 @@ app.post("/make-server-822d5729/tracks", async (c) => {
       return c.json({ error: 'Failed to upload audio file' }, 500);
     }
 
-    // Загрузка обложки (если есть)
     let coverPath = null;
     if (coverFile) {
       const coverFileName = `${trackId}_cover.${coverFile.name.split('.').pop()}`;
@@ -89,7 +80,6 @@ app.post("/make-server-822d5729/tracks", async (c) => {
       }
     }
 
-    // Сохранение метаданных в KV
     const trackData = {
       id: trackId,
       name,
@@ -111,12 +101,10 @@ app.post("/make-server-822d5729/tracks", async (c) => {
   }
 });
 
-// Получение всех треков
 app.get("/make-server-822d5729/tracks", async (c) => {
   try {
     const tracks = await kv.getByPrefix('track:');
     
-    // Получаем signed URLs для всех файлов
     const tracksWithUrls = await Promise.all(
       tracks.map(async (track: any) => {
         const { data: audioUrl } = await supabase.storage
@@ -146,7 +134,6 @@ app.get("/make-server-822d5729/tracks", async (c) => {
   }
 });
 
-// Обновление трека
 app.put("/make-server-822d5729/tracks/:id", async (c) => {
   try {
     const trackId = c.req.param('id');
@@ -172,7 +159,6 @@ app.put("/make-server-822d5729/tracks/:id", async (c) => {
   }
 });
 
-// Добавление обложки к треку
 app.post("/make-server-822d5729/tracks/:id/cover", async (c) => {
   try {
     const trackId = c.req.param('id');
@@ -188,12 +174,10 @@ app.post("/make-server-822d5729/tracks/:id/cover", async (c) => {
       return c.json({ error: 'Track not found' }, 404);
     }
 
-    // Удаляем старую обложку, если есть
     if (existingTrack.coverPath) {
       await supabase.storage.from(bucketName).remove([existingTrack.coverPath]);
     }
 
-    // Загружаем новую обложку
     const coverFileName = `${trackId}_cover.${coverFile.name.split('.').pop()}`;
     const coverBuffer = await coverFile.arrayBuffer();
     const { error: coverError } = await supabase.storage
@@ -215,7 +199,6 @@ app.post("/make-server-822d5729/tracks/:id/cover", async (c) => {
 
     await kv.set(`track:${trackId}`, updatedTrack);
 
-    // Получаем signed URL для обложки
     const { data: coverUrl } = await supabase.storage
       .from(bucketName)
       .createSignedUrl(`covers/${coverFileName}`, 3600);
@@ -227,7 +210,6 @@ app.post("/make-server-822d5729/tracks/:id/cover", async (c) => {
   }
 });
 
-// Удаление трека
 app.delete("/make-server-822d5729/tracks/:id", async (c) => {
   try {
     const trackId = c.req.param('id');
@@ -237,15 +219,12 @@ app.delete("/make-server-822d5729/tracks/:id", async (c) => {
       return c.json({ error: 'Track not found' }, 404);
     }
 
-    // Удаляем файлы из storage
     const filesToDelete = [existingTrack.audioPath];
     if (existingTrack.coverPath) {
       filesToDelete.push(existingTrack.coverPath);
     }
 
     await supabase.storage.from(bucketName).remove(filesToDelete);
-
-    // Удаляем метаданные из KV
     await kv.del(`track:${trackId}`);
 
     return c.json({ success: true });

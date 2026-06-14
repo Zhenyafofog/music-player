@@ -1,18 +1,20 @@
-import { X, Moon, Sun } from 'lucide-react';
+import { X, Moon, Sun, LogOut } from 'lucide-react';
 
 interface SettingsModalProps {
   isOpen: boolean;
   onClose: () => void;
   isDarkMode: boolean;
   onToggleDarkMode: () => void;
+  onSignOut: () => void; // Добавили проп для функции выхода
 }
 
-export function SettingsModal({ isOpen, onClose, isDarkMode, onToggleDarkMode }: SettingsModalProps) {
+export function SettingsModal({ isOpen, onClose, isDarkMode, onToggleDarkMode, onSignOut }: SettingsModalProps) {
   if (!isOpen) return null;
 
   return (
     <div className="fixed inset-0 bg-black/50 flex items-center justify-center z-50 p-4">
       <div className="bg-white dark:bg-gray-800 rounded-lg shadow-xl w-full max-w-md">
+        {/* Шапка */}
         <div className="flex items-center justify-between p-6 border-b border-gray-200 dark:border-gray-700">
           <h2 className="text-xl font-semibold text-gray-900 dark:text-white">Настройки</h2>
           <button
@@ -24,7 +26,10 @@ export function SettingsModal({ isOpen, onClose, isDarkMode, onToggleDarkMode }:
           </button>
         </div>
         
-        <div className="p-6">
+        {/* Контент настроек */}
+        <div className="p-6 flex flex-col gap-6">
+          
+          {/* Блок: Смена темы */}
           <div className="flex items-center justify-between">
             <div className="flex items-center gap-3">
               {isDarkMode ? (
@@ -51,8 +56,24 @@ export function SettingsModal({ isOpen, onClose, isDarkMode, onToggleDarkMode }:
               />
             </button>
           </div>
+
+          {/* Блок: Выйти из аккаунта (в том же стиле) */}
+          <button
+            onClick={onSignOut}
+            className="flex items-center justify-between w-full text-left group"
+          >
+            <div className="flex items-center gap-3">
+              <LogOut className="w-5 h-5 text-red-500 dark:text-red-400 transition-transform group-hover:translate-x-0.5" />
+              <div>
+                <div className="font-medium text-gray-900 dark:text-white">Аккаунт</div>
+                <div className="text-sm text-gray-500 dark:text-gray-400">Выйти из аккаунта</div>
+              </div>
+            </div>
+          </button>
+
         </div>
         
+        {/* Подвал */}
         <div className="p-6 border-t border-gray-200 dark:border-gray-700 flex justify-end">
           <button
             onClick={onClose}
